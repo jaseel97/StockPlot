@@ -36,15 +36,15 @@ def get_data_frame(stock_name, time):
     url_csv = "https://www.alphavantage.co/query?function={}&symbol={}&interval=15min&outputsize=compact&apikey={}&datatype=csv".format(time_series, stock_name, api_key)
     pd_data = pd.read_csv(url_csv)
     print("INFO : Download Complete")
+    create_temp_csv(pd_data, stock_name)
+
     return pd_data
-    # create_temp_csv(pd_data, stock_name)
+
     # insert_into_db(pd_data, stock_name)
 
-def plt_plot(data, plot_name):
-    x_axis_real = [i[0] for i in data[:50]]
-    y_axis = [i[1] for i in data[:50]]
-    # for i in range(len(x_axis_real)):
-    #     x_axis_real[i] = x_axis_real[i][5:]
+def plt_plot(data, plot_name, num_items):
+    x_axis_real = [i[0] for i in data[:num_items]]
+    y_axis = [i[1] for i in data[:num_items]]
     x_axis = range(len(x_axis_real))
     plt.xticks(x_axis, x_axis_real, rotation='vertical')
 
@@ -60,8 +60,6 @@ def plt_two_plot(data1, data2, plot_name):
 
     x_axis_real2 = [i[0] for i in data2[:50]]
     y_axis2 = [i[1] for i in data2[:50]]
-    # for i in range(len(x_axis_real)):
-    #     x_axis_real[i] = x_axis_real[i][5:]
     x_axis = range(len(x_axis_real1))
     plt.xticks(x_axis, x_axis_real1, rotation='vertical')
     plt.xticks(x_axis, x_axis_real2, rotation='vertical')
@@ -77,14 +75,15 @@ def plot_two_data(table_name1, table_name2, con):
     df1 = pd.read_sql_table(table_name1, con)
     df2 = pd.read_sql_table(table_name2, con)
 
-def plot_data(table_name, con):
+#PLOT DATA
+def plot_data(table_name, con, num_items):
     df = pd.read_sql_table(table_name, con)
     df = df[['timestamp', 'close']]
     data = df.values
-    plt_plot(data, table_name)
-    # print(data)
+    plt_plot(data, table_name, num_items)
     # print(df.head())
 
+# LOAD DATA
 def load_data(stock_name, time):
     df = get_data_frame(stock_name, time)
     # df = df[['timestamp','open', 'high', 'low', 'close', 'volume']]
