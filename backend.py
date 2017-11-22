@@ -1,7 +1,9 @@
 import pandas as pd
 import requests
 import json
-import MySQLdb
+import pymysql
+import matplotlib.pyplot as plt
+from sqlalchemy import create_engine
 from credentials import alphavantage_api_key as api_key
 from credentials import db_username, db_password, db_name
 
@@ -22,24 +24,73 @@ def create_temp_csv(data_frame, stock_name):
         data_frame.to_csv(file_name)
 
 def insert_into_db(df, table_name):
-    db = MySQLdb.connect(host="localhost",
-                        user=db_username,
-                        passwd=db_password)
-                        # db=db_name)
-                        # port=3306)
-    df.to_sql(con=db, name=table_name, if_exists='replace', flavor='sqlite')
+    con_str = 'mysql+pymysql://{}:{}@localhost:3306/mysql'.format(db_username, db_password)
+    con = create_engine(con_str, echo=False)
+    df.to_sql(name=table_name, con=con, if_exists='replace')
     print("INFO : DataBase Created.")
+    return con
 
-def get_data_frame(stock_name="GOOGL", time="month"):
+def get_data_frame(stock_name, time):
     time_series = get_time_series(time)
-    url_csv = "https://www.alphavantage.co/query?function={}&symbol={}&interval=15min&outputsize=full&apikey={}&datatype=csv".format(time_series, stock_name, api_key)
-    pd_data = pd.read_csv("GOOGL.csv")
+    print("INFO : Downloading Data")
+    url_csv = "https://www.alphavantage.co/query?function={}&symbol={}&interval=15min&outputsize=compact&apikey={}&datatype=csv".format(time_series, stock_name, api_key)
+    pd_data = pd.read_csv(url_csv)
+    print("INFO : Download Complete")
     return pd_data
     # create_temp_csv(pd_data, stock_name)
     # insert_into_db(pd_data, stock_name)
 
+def plt_plot(data, plot_name):
+    x_axis_real = [i[0] for i in data[:50]]
+    y_axis = [i[1] for i in data[:50]]
+    # for i in range(len(x_axis_real)):
+    #     x_axis_real[i] = x_axis_real[i][5:]
+    x_axis = range(len(x_axis_real))
+    plt.xticks(x_axis, x_axis_real, rotation='vertical')
+
+    plt.plot(x_axis, y_axis)
+    plt.title(plot_name)
+    plt.xlabel('Time Stamp')
+    plt.ylabel('Values')
+    plt.show()
+
+def plt_two_plot(data1, data2, plot_name):
+    x_axis_real1 = [i[0] for i in data1[:50]]
+    y_axis1 = [i[1] for i in data1[:50]]
+
+    x_axis_real2 = [i[0] for i in data2[:50]]
+    y_axis2 = [i[1] for i in data2[:50]]
+    # for i in range(len(x_axis_real)):
+    #     x_axis_real[i] = x_axis_real[i][5:]
+    x_axis = range(len(x_axis_real1))
+    plt.xticks(x_axis, x_axis_real1, rotation='vertical')
+    plt.xticks(x_axis, x_axis_real2, rotation='vertical')
+
+    plt.plot(x_axis, y_axis1)
+    plt.plot(x_axis, y_axis2)
+    plt.title(plot_name)
+    plt.xlabel('Time Stamp')
+    plt.ylabel('Values')
+    plt.show()
+
+def plot_two_data(table_name1, table_name2, con):
+    df1 = pd.read_sql_table(table_name1, con)
+    df2 = pd.read_sql_table(table_name2, con)
+
+def plot_data(table_name, con):
+    df = pd.read_sql_table(table_name, con)
+    df = df[['timestamp', 'close']]
+    data = df.values
+    plt_plot(data, table_name)
+    # print(data)
+    # print(df.head())
+
 def load_data(stock_name, time):
     df = get_data_frame(stock_name, time)
-    insert_into_db(df, stock_name)
+    # df = df[['timestamp','open', 'high', 'low', 'close', 'volume']]
+    con = insert_into_db(df, stock_name)
+    return con
 
-load_data("GOOGL", "month")
+# con = load_data("GOOGL", "day")
+# plot_data("GOOGL", con)
+# plt_two_plot([[1,2], [3, 4]], [[3,4], [5,6]], "name")
