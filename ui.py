@@ -1,6 +1,9 @@
-import Tkinter as tk
-from ttk import *
-import tkMessageBox as tkm
+import tkinter as tk
+from tkinter.ttk import *
+import tkinter.messagebox as tkm
+from PIL import Image, ImageTk
+
+from backend import load_data, plot_data
 
 base = tk.Tk()
 base.title("StockPlot");
@@ -85,7 +88,8 @@ plot_button = tk.Button(base,text="Plot",command=plotPress)
 plot_button.config(width=17)
 plot_button.pack(pady=(20,1))
 
-bg = tk.PhotoImage(file="bg.png")
+# bg = tk.PhotoImage(file="bg.png")
+bg = ImageTk.PhotoImage("bg.png")
 bg_label = tk.Label(base,image=bg)
 bg_label.pack()
 
