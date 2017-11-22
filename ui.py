@@ -8,7 +8,7 @@ base.geometry("600x700")
 
 title_text = 'StockPlot';
 title_label = tk.Label(base,text=title_text,font=("Helvetica",20,"bold"))
-title_label.pack(pady=30)
+title_label.pack(pady=15)
 
 header1_text="Collect Stock Data"
 header1_label = tk.Label(base,text = header1_text,font=("Helvetica,15,bold"))
@@ -66,9 +66,23 @@ stock_dropdown2 = OptionMenu(base,stock2,*stocks)
 stock_dropdown2.config(width=14)
 stock_dropdown2.pack(pady=(5,1))
 
+header3_text="Pick Timescale"
+header3_label = tk.Label(base,text = header3_text,font=("Helvetica,15,bold"))
+header3_label.pack(pady=(20,2))
+	
+duration1 = tk.StringVar(base)
+duration = [' ','Day','Month','Year']
+duration1.set(duration[0])
+duration_dropdown = OptionMenu(base,duration1,*duration) ####
+duration_dropdown.config(width=14)
+duration_dropdown.pack()
+
 def plotPress():
 	s1 = stock1.get()
 	s2 = stock2.get()
+	d1 = duration1.get()
+	if d1 == ' ':
+		tkm.showinfo('Info','Select Duration!')
 	if s1==' ' and s2==' ':
 		tkm.showinfo("Info","Select atleast one stock to plot!")
 	elif s2==' ':
