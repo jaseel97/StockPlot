@@ -114,7 +114,7 @@ def onPlotPress():
         con = load_data(s1, t1)
         load_data(s2, t1)
         plot_two_data(s1, s2, con, int(d1))
-        # print("Plot stock1 and stock2")            # add if possible else leave it  :-P
+
 
 
 plot_button = tk.Button(base,text="Plot",command=onPlotPress)

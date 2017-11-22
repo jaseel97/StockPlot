@@ -41,7 +41,6 @@ def get_data_frame(stock_name, time):
     create_temp_csv(pd_data, stock_name)
     return pd_data
 
-    # insert_into_db(pd_data, stock_name)
 
 
 def plt_plot(data, plot_name, num_items):
