@@ -2,11 +2,11 @@ import Tkinter as tk
 from ttk import *
 import tkMessageBox as tkm
 
-base = tk.Tk()
+base = tk.Tk()					# bottommost/base/root window definition						
 base.title("StockPlot");
-base.geometry("600x700")
+base.geometry("600x800")
 
-title_text = 'StockPlot';
+title_text = 'StockPlot';       # heading inside window
 title_label = tk.Label(base,text=title_text,font=("Helvetica",20,"bold"))
 title_label.pack(pady=15)
 
@@ -19,10 +19,10 @@ addstock_default = 'Enter Stock Name'
 addstock_entry.insert(0,addstock_default)
 addstock_entry.pack()
 
-stocks = ['GOOG','YHOO'," "] # replace with all stocks preent in db + append a  " " at the end
+stocks = ['GOOG','YHOO'," "] # replace with all stocks present in db + append a  " " at the end
 stocks.sort()
-
-def addStock():
+ 
+def addStock():         # when add button is pressed, this fuction is executed
 	stockname = addstock_entry.get()
 	if stockname==addstock_default:
 		tkm.showinfo("Info","Please insert a stock name!")
@@ -30,20 +30,20 @@ def addStock():
 		if stockname in stocks:
 			tkm.showinfo("Info","Stock "+stockname+" already present in Database!")
 		else:
-			tkm.showinfo("Info","Added Successfully!")
 			fetchStockData(stockname)
+			tkm.showinfo("Info","Added Successfully!")
 
-def fetchStockData(stockname):
-	print "fetching"
+def fetchStockData(stockname):    # put fetching stock data and storing in db here
+	print "fetching"              # replace print statement with you know what B-)
 	updateList(stockname)
 	addstock_entry.delete(0,'end')
 	addstock_entry.insert(0,addstock_default)
 	
 def updateList(stockname):
 	stocks.append(stockname)
-	print stocks
-	stock_dropdown.set_menu(stocks[0],*stocks)
-	stock_dropdown2.set_menu(stocks[0],*stocks)
+	print stocks                  # you dont really need this. just checking if it actually works
+	stock_dropdown.set_menu(stocks[0],*stocks)      #update dropdown list
+	stock_dropdown2.set_menu(stocks[0],*stocks)     #update dropdown list
 				
 
 addstock_button = tk.Button(base,text="Add",command=addStock)
@@ -52,11 +52,11 @@ addstock_button.pack()
 
 header2_text="Pick Stock"
 header2_label = tk.Label(base,text = header2_text,font=("Helvetica,15,bold"))
-header2_label.pack(pady=(20,2))
+header2_label.pack(pady=(15,2))
 	
 stock1 = tk.StringVar(base)
 stock1.set(stocks[0])
-stock_dropdown = OptionMenu(base,stock1,*stocks) ####
+stock_dropdown = OptionMenu(base,stock1,*stocks) 
 stock_dropdown.config(width=14)
 stock_dropdown.pack()
 
@@ -68,36 +68,50 @@ stock_dropdown2.pack(pady=(5,1))
 
 header3_text="Pick Timescale"
 header3_label = tk.Label(base,text = header3_text,font=("Helvetica,15,bold"))
-header3_label.pack(pady=(20,2))
+header3_label.pack(pady=(15,2))
 	
-duration1 = tk.StringVar(base)
-duration = [' ','Day','Month','Year']
-duration1.set(duration[0])
-duration_dropdown = OptionMenu(base,duration1,*duration) ####
-duration_dropdown.config(width=14)
-duration_dropdown.pack()
+timescale1 = tk.StringVar(base)
+timescale = [' ','Daily','Weekly','Monthly']
+timescale1.set(timescale[0])
+timescale_dropdown = OptionMenu(base,timescale1,*timescale) 
+timescale_dropdown.config(width=14)
+timescale_dropdown.pack()
 
-def plotPress():
-	s1 = stock1.get()
-	s2 = stock2.get()
-	d1 = duration1.get()
+header4_text="Pick Datapoint Count"
+header4_label = tk.Label(base,text = header4_text,font=("Helvetica,15,bold"))
+header4_label.pack(pady=(15,2))
+	
+datapoint1 = tk.StringVar(base)
+datapoint = [' ','1','2','3','4','5','6','7','8','9','10','11','12']   # type cast to str to get datapoint value. values given as strings to avoid problems while making dropdown
+datapoint1.set(datapoint[0])
+datapoint_dropdown = OptionMenu(base,datapoint1,*datapoint) 
+datapoint_dropdown.config(width=14)
+datapoint_dropdown.pack()
+
+def onPlotPress():
+	s1 = stock1.get() #stock1 name as str
+	s2 = stock2.get() #stock2 name as str
+	t1 = timescale1.get() # timescale 'Daily' 'Weekly' or 'Monthly'
+	d1 = datapoint1.get() # datapoint count as str
+	if t1 == ' ':
+		tkm.showinfo('Info','Select a Timescale!')
 	if d1 == ' ':
-		tkm.showinfo('Info','Select Duration!')
+		tkm.showinfo('Info','Select number of data points!')
 	if s1==' ' and s2==' ':
-		tkm.showinfo("Info","Select atleast one stock to plot!")
+		tkm.showinfo("Info","Select at least one stock to plot!")
 	elif s2==' ':
-		print "Plot only stock1"
+		print "Plot only stock1"                   # replace all prints with retreiving data from db and plotting part
 	elif s1==' ':
 		print "Plot only stock2"
 	elif s1==s2:
-		print "PLot only stock1"
+		print "Plot only stock1"
 	else:
-		print "Plot stock1 and stock2"
+		print "Plot stock1 and stock2"             # add if possible else leave it  :-P
 
 
-plot_button = tk.Button(base,text="Plot",command=plotPress)
+plot_button = tk.Button(base,text="Plot",command=onPlotPress)
 plot_button.config(width=17)
-plot_button.pack(pady=(20,1))
+plot_button.pack(pady=(15,1))
 
 bg = tk.PhotoImage(file="bg.png")
 bg_label = tk.Label(base,image=bg)
