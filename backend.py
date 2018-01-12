@@ -44,8 +44,8 @@ def get_data_frame(stock_name, time):
 
 
 def plt_plot(data, plot_name, num_items):
-    x_axis_real = [i[0] for i in data[:num_items]]
-    y_axis = [i[1] for i in data[:num_items]]
+    x_axis_real = [i[0] for i in data[:num_items]][::-1]    #Reversed the data
+    y_axis = [i[1] for i in data[:num_items]][::-1]         #Reversed the data
 
     x_axis = range(len(x_axis_real))
     plt.xticks(x_axis, x_axis_real, rotation='vertical')
@@ -58,11 +58,11 @@ def plt_plot(data, plot_name, num_items):
 
 
 def plt_two_plot(table_name1, table_name2, data1, data2, plot_name, num_items):
-    x_axis_real1 = [i[0] for i in data1[:num_items]]
-    y_axis1 = [i[1] for i in data1[:num_items]]
+    x_axis_real1 = [i[0] for i in data1[:num_items]][::-1]  #Reversed
+    y_axis1 = [i[1] for i in data1[:num_items]][::-1]       #Reversed
 
-    x_axis_real2 = [i[0] for i in data2[:num_items]]
-    y_axis2 = [i[1] for i in data2[:num_items]]
+    x_axis_real2 = [i[0] for i in data2[:num_items]][::-1]  #Reversed
+    y_axis2 = [i[1] for i in data2[:num_items]][::-1]       #Reversed
 
     x_axis = range(len(x_axis_real1))
     plt.xticks(x_axis, x_axis_real1, rotation='vertical')
