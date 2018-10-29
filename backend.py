@@ -44,7 +44,7 @@ def get_data_frame(stock_name, time):
 
 
 def plt_plot(data, plot_name, num_items):
-    x_axis_real = [i[0] for i in data[:num_items]][::-1]    #Reversed the data
+    x_axis_real = [i[0] for i in data[:num_items]][::-1]    #Final code. Plotting shows correct graph
     y_axis = [i[1] for i in data[:num_items]][::-1]         #Reversed the data
 
     x_axis = range(len(x_axis_real))
