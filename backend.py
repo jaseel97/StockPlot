@@ -7,6 +7,8 @@ from sqlalchemy import create_engine
 from credentials import alphavantage_api_key as api_key
 from credentials import db_username, db_password, db_name
 
+# Function to get the time series var
+
 def get_time_series(time):
     time = time.lower()
     if time=='daily':
